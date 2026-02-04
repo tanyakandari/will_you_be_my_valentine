@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rose: #ff4d6d;
+            --blush: #ffb5c0;
+            --cream: #fff5f7;
+            --deep-rose: #c9184a;
+            --gold: #ffd166;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+            background: var(--cream);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated hearts background */
+        .hearts-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatHeart 8s infinite ease-in-out;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Create Page Styles */
+        .create-section {
+            background: white;
+            padding: 60px 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 77, 109, 0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: fadeSlideUp 0.8s ease-out;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            color: var(--deep-rose);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            color: var(--rose);
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--deep-rose);
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--blush);
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-family: 'Quicksand', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--cream);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--rose);
+            box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.1);
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--rose), var(--deep-rose));
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        /* Share Link Section */
+        .share-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.15);
+            animation: fadeSlideUp 0.8s ease-out 0.2s both;
+        }
+
+        .share-link-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .link-display {
+            flex: 1;
+            padding: 15px;
+            background: var(--cream);
+            border: 2px solid var(--blush);
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+
+        .btn-copy, .btn-share {
+            padding: 15px 30px;
+            background: var(--gold);
+            color: var(--deep-rose);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-copy:hover, .btn-share:hover {
+            background: #ffc233;
+            transform: scale(1.05);
+        }
+
+        /* Question Page Styles */
+        .question-section {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .question-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            color: var(--deep-rose);
+            margin-bottom: 20px;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10% { transform: scale(1.05); }
+            20% { transform: scale(1); }
+        }
+
+        .from-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2em;
+            color: var(--rose);
+            margin-bottom: 60px;
+        }
+
+        .buttons-container {
+            position: relative;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            min-height: 200px;
+            align-items: center;
+        }
+
+        .btn-yes, .btn-no {
+            padding: 20px 50px;
+            font-size: 1.5em;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #06ffa5, #00cc88);
+            color: white;
+            box-shadow: 0 10px 30px rgba(6, 255, 165, 0.3);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(6, 255, 165, 0.5);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #ff6b9d, var(--rose));
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.3);
+        }
+        
+        .btn-no.moving {
+            position: absolute;
+        }
+
+        /* Response Pages */
+        .response-section {
+            text-align: center;
+            max-width: 600px;
+            background: white;
+            padding: 60px 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 77, 109, 0.2);
+            animation: fadeSlideUp 0.8s ease-out;
+        }
+
+        .response-emoji {
+            font-size: 8em;
+            margin-bottom: 20px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .response-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .response-title.yes {
+            color: #00cc88;
+        }
+
+        .response-title.no {
+            color: var(--rose);
+        }
+
+        .response-message {
+            font-size: 1.3em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall 3s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2em; }
+            .question-title { font-size: 2.5em; }
+            .create-section { padding: 40px 30px; }
+            .btn-yes, .btn-no { padding: 15px 35px; font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-background" id="heartsBackground"></div>
+    
+    <div class="container">
+        <!-- Create Page -->
+        <div id="createPage" class="create-section">
+            <h1>💝 Valentine's Message</h1>
+            <p class="subtitle">Create your special moment</p>
+            
+            <div class="input-group">
+                <label for="yourName">Your Name:</label>
+                <input type="text" id="yourName" placeholder="Enter your name">
+            </div>
+            
+            <div class="input-group">
+                <label for="crushName">Their Name:</label>
+                <input type="text" id="crushName" placeholder="Enter their name">
+            </div>
+            
+            <button class="btn btn-primary" onclick="createLink()">Create Magic Link ✨</button>
+            
+            <div id="shareSection" class="share-section hidden">
+                <h3 style="color: var(--deep-rose); margin-bottom: 20px; font-family: 'Playfair Display', serif;">Share This Link</h3>
+                <div class="share-link-container">
+                    <div class="link-display" id="linkDisplay"></div>
+                    <button class="btn-copy" onclick="copyLink()">
+                        📋 Copy
+                    </button>
+                </div>
+                <button class="btn-share" onclick="shareLink()" style="width: 100%;">
+                    💌 Share via Email/Message
+                </button>
+            </div>
+        </div>
+
+        <!-- Question Page -->
+        <div id="questionPage" class="question-section hidden">
+            <h1 class="question-title">Will You Be My Valentine?</h1>
+            <p class="from-text">From: <span id="fromName"></span></p>
+            <p class="from-text" style="font-size: 1.5em; margin-top: -40px;">To: <span id="toName"></span></p>
+            
+            <div class="buttons-container">
+                <button class="btn-yes" onclick="respondYes()">Yes! 💕</button>
+                <button class="btn-no" id="noBtn" onmouseover="moveButton()" onclick="respondNo()">No</button>
+            </div>
+        </div>
+
+        <!-- Yes Response Page -->
+        <div id="yesPage" class="response-section hidden">
+            <div class="response-emoji">🎉💖🥰</div>
+            <h2 class="response-title yes">Yay! Dreams Do Come True!</h2>
+            <p class="response-message">
+                This is the start of something beautiful! 
+                <span id="senderName"></span> is going to be so happy! 
+                Get ready for an amazing Valentine's Day! 💝✨
+            </p>
+            
+            <div class="share-section" style="margin-top: 30px;">
+                <h3 style="color: #00cc88; margin-bottom: 15px; font-family: 'Playfair Display', serif;">Notify <span id="senderNameNotify"></span></h3>
+                <p style="margin-bottom: 20px; color: #555;">Share this good news!</p>
+                <div class="share-link-container">
+                    <div class="link-display" id="yesLinkDisplay"></div>
+                    <button class="btn-copy" onclick="copyResponseLink('yes')">
+                        📋 Copy
+                    </button>
+                </div>
+                <button class="btn-share" onclick="shareResponse('yes')" style="width: 100%; margin-bottom: 15px;">
+                    💌 Send to <span id="senderNameShare"></span>
+                </button>
+            </div>
+            
+            <button class="btn btn-primary" onclick="createNew()" style="margin-top: 20px;">Create Your Own</button>
+        </div>
+
+        <!-- No Response Page -->
+        <div id="noPage" class="response-section hidden">
+            <div class="response-emoji">🥺💔</div>
+            <h2 class="response-title no">Aww, That's Okay...</h2>
+            <p class="response-message">
+                Sometimes timing isn't right, and that's perfectly fine. 
+                <span id="senderNameNo"></span> will understand. 
+                Maybe friendship is the real treasure? There's always hope! 🌟💫
+            </p>
+            
+            <div class="share-section" style="margin-top: 30px;">
+                <h3 style="color: var(--rose); margin-bottom: 15px; font-family: 'Playfair Display', serif;">Notify <span id="senderNameNotifyNo"></span></h3>
+                <p style="margin-bottom: 20px; color: #555;">Let them know gently...</p>
+                <div class="share-link-container">
+                    <div class="link-display" id="noLinkDisplay"></div>
+                    <button class="btn-copy" onclick="copyResponseLink('no')">
+                        📋 Copy
+                    </button>
+                </div>
+                <button class="btn-share" onclick="shareResponse('no')" style="width: 100%; margin-bottom: 15px;">
+                    💌 Send to <span id="senderNameShareNo"></span>
+                </button>
+            </div>
+            
+            <button class="btn btn-primary" onclick="createNew()" style="margin-top: 20px;">Create Your Own</button>
+        </div>
+
+        <!-- Sender Notification - YES Response -->
+        <div id="senderYesPage" class="response-section hidden">
+            <div class="response-emoji">🎊💖🎉</div>
+            <h2 class="response-title yes">They Said YES!</h2>
+            <p class="response-message" style="font-size: 1.5em; margin-bottom: 10px;">
+                <strong><span id="recipientNameYes"></span></strong> wants to be your Valentine!
+            </p>
+            <p class="response-message">
+                This is amazing news, <strong><span id="originalSenderYes"></span></strong>! 
+                Your courage paid off and now you have a Valentine's date to look forward to! 
+                Time to plan something special! Maybe flowers? A romantic dinner? 
+                Whatever you choose, make it memorable! 💐✨
+            </p>
+            <p class="response-message" style="font-size: 1.1em; font-style: italic; color: #00cc88;">
+                "The best love story is the one you write together." 💕
+            </p>
+            <button class="btn btn-primary" onclick="createNew()" style="margin-top: 20px;">Create Your Own</button>
+        </div>
+
+        <!-- Sender Notification - NO Response -->
+        <div id="senderNoPage" class="response-section hidden">
+            <div class="response-emoji">💙🌟</div>
+            <h2 class="response-title no">Not This Time...</h2>
+            <p class="response-message" style="font-size: 1.5em; margin-bottom: 10px;">
+                <strong><span id="recipientNameNo"></span></strong> said no
+            </p>
+            <p class="response-message">
+                Hey <strong><span id="originalSenderNo"></span></strong>, 
+                we know this isn't the answer you were hoping for, but it takes real courage to put yourself out there. 
+                Be proud of that! Sometimes timing isn't right, or feelings don't align, and that's completely okay. 
+                This doesn't define your worth or your ability to find love. 
+            </p>
+            <p class="response-message">
+                Every "no" brings you closer to the right "yes." 
+                Keep being yourself, keep being brave, and keep your heart open. 
+                The right person will see how amazing you are! 💫
+            </p>
+            <p class="response-message" style="font-size: 1.1em; font-style: italic; color: var(--rose);">
+                "Sometimes the heart needs more time than the calendar shows." 🌹
+            </p>
+            <button class="btn btn-primary" onclick="createNew()" style="margin-top: 20px;">Create Your Own</button>
+        </div>
+    </div>
+
+    <script>
+        // Google Analytics Enhanced Tracking
+        class AnalyticsTracker {
+            constructor() {
+                this.measurementId = 'GA_MEASUREMENT_ID';
+                this.init();
+            }
+
+            init() {
+                // Track page views based on URL parameters
+                this.trackPageView();
+                
+                // Track user interactions
+                this.setupEventTracking();
+            }
+
+            trackPageView() {
+                const params = new URLSearchParams(window.location.search);
+                let pageName = 'home';
+                
+                if (params.get('from') && params.get('to')) {
+                    if (params.get('response')) {
+                        pageName = `response-${params.get('response')}`;
+                        if (params.get('notify') === 'sender') {
+                            pageName = `sender-notification-${params.get('response')}`;
+                        }
+                    } else {
+                        pageName = 'question';
+                    }
+                }
+                
+                gtag('config', this.measurementId, {
+                    page_title: `Valentine's - ${pageName}`,
+                    page_location: window.location.href
+                });
+            }
+
+            trackEvent(eventName, parameters = {}) {
+                gtag('event', eventName, {
+                    custom_parameter_1: parameters.from || 'unknown',
+                    custom_parameter_2: parameters.to || 'unknown',
+                    ...parameters
+                });
+            }
+
+            setupEventTracking() {
+                // Track link creation
+                this.trackButtonClick('createLink', 'btn-primary', () => {
+                    const yourName = document.getElementById('yourName')?.value;
+                    const crushName = document.getElementById('crushName')?.value;
+                    this.trackEvent('valentine_link_created', {
+                        from: yourName,
+                        to: crushName
+                    });
+                });
+
+                // Track responses
+                this.trackButtonClick('respondYes', 'btn-yes', () => {
+                    const params = new URLSearchParams(window.location.search);
+                    this.trackEvent('valentine_response_yes', {
+                        from: params.get('from'),
+                        to: params.get('to')
+                    });
+                });
+
+                this.trackButtonClick('respondNo', 'btn-no', () => {
+                    const params = new URLSearchParams(window.location.search);
+                    this.trackEvent('valentine_response_no', {
+                        from: params.get('from'),
+                        to: params.get('to')
+                    });
+                });
+
+                // Track copy actions
+                this.trackButtonClick('copyLink', 'btn-copy', () => {
+                    this.trackEvent('link_copied');
+                });
+
+                this.trackButtonClick('copyResponseLink', 'btn-copy', () => {
+                    this.trackEvent('response_link_copied');
+                });
+
+                // Track share actions
+                this.trackButtonClick('shareLink', 'btn-share', () => {
+                    this.trackEvent('link_shared');
+                });
+
+                this.trackButtonClick('shareResponse', 'btn-share', () => {
+                    this.trackEvent('response_shared');
+                });
+            }
+
+            trackButtonClick(functionName, buttonClass, callback) {
+                // Override existing functions or add event listeners
+                const originalFunction = window[functionName];
+                if (originalFunction) {
+                    window[functionName] = function() {
+                        callback();
+                        return originalFunction.apply(this, arguments);
+                    };
+                } else {
+                    // Add event listeners for buttons
+                    document.addEventListener('click', (e) => {
+                        if (e.target.closest(`.${buttonClass}`)) {
+                            callback();
+                        }
+                    });
+                }
+            }
+        }
+
+        // Create floating hearts background
+        function createHearts() {
+            const background = document.getElementById('heartsBackground');
+            const hearts = ['❤️', '💕', '💖', '💗', '💝', '💘'];
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    background.appendChild(heart);
+                }, i * 300);
+            }
+        }
+
+        createHearts();
+
+        // URL parameter handling
+        function getParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                from: params.get('from'),
+                to: params.get('to'),
+                response: params.get('response'),
+                notify: params.get('notify')
+            };
+        }
+
+        // Create link functionality
+        function createLink() {
+            const yourName = document.getElementById('yourName').value.trim();
+            const crushName = document.getElementById('crushName').value.trim();
+            
+            if (!yourName || !crushName) {
+                alert('Please fill in both names! 💝');
+                return;
+            }
+            
+            const baseUrl = window.location.href.split('?')[0];
+            const link = `${baseUrl}?from=${encodeURIComponent(yourName)}&to=${encodeURIComponent(crushName)}`;
+            
+            document.getElementById('linkDisplay').textContent = link;
+            document.getElementById('shareSection').classList.remove('hidden');
+            
+            // Smooth scroll to share section
+            document.getElementById('shareSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Copy link to clipboard
+        function copyLink() {
+            const link = document.getElementById('linkDisplay').textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                const btn = event.target.closest('.btn-copy');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        // Share link
+        function shareLink() {
+            const link = document.getElementById('linkDisplay').textContent;
+            const yourName = document.getElementById('yourName').value;
+            const message = `💝 You have a special Valentine's message! Click here: ${link}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Will You Be My Valentine?',
+                    text: message,
+                    url: link
+                });
+            } else {
+                window.location.href = `mailto:?subject=Will You Be My Valentine?&body=${encodeURIComponent(message)}`;
+            }
+        }
+
+        // Move the No button randomly
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            btn.classList.add('moving');
+            const container = btn.parentElement;
+            const containerRect = container.getBoundingClientRect();
+            
+            const maxX = containerRect.width - btn.offsetWidth - 100;
+            const maxY = containerRect.height - btn.offsetHeight - 100;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
+
+        // Response handlers
+        function respondYes() {
+            const params = getParams();
+            const responseUrl = `${window.location.href.split('?')[0]}?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}&response=yes`;
+            window.location.href = responseUrl;
+        }
+
+        function respondNo() {
+            const params = getParams();
+            const responseUrl = `${window.location.href.split('?')[0]}?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}&response=no`;
+            window.location.href = responseUrl;
+        }
+
+        // Copy response link
+        function copyResponseLink(response) {
+            const linkId = response === 'yes' ? 'yesLinkDisplay' : 'noLinkDisplay';
+            const link = document.getElementById(linkId).textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                const btn = event.target.closest('.btn-copy');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        // Share response notification
+        function shareResponse(response) {
+            const params = getParams();
+            const link = document.getElementById(response === 'yes' ? 'yesLinkDisplay' : 'noLinkDisplay').textContent;
+            
+            const message = response === 'yes' 
+                ? `💕 Hey ${params.from}! I have some exciting news about your Valentine's question... Click here to see: ${link}`
+                : `💭 Hi ${params.from}, I've responded to your Valentine's question. Please check this link: ${link}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Valentine Response',
+                    text: message,
+                    url: link
+                });
+            } else {
+                window.location.href = `mailto:?subject=Response to Your Valentine's Question&body=${encodeURIComponent(message)}`;
+            }
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ff4d6d', '#ffb5c0', '#ffd166', '#06ffa5', '#ff6b9d'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Create new valentine
+        function createNew() {
+            window.location.href = window.location.href.split('?')[0];
+        }
+
+        // Page initialization
+        function initPage() {
+            const params = getParams();
+            
+            // Hide all sections initially
+            document.getElementById('createPage').classList.add('hidden');
+            document.getElementById('questionPage').classList.add('hidden');
+            document.getElementById('yesPage').classList.add('hidden');
+            document.getElementById('noPage').classList.add('hidden');
+            document.getElementById('senderYesPage').classList.add('hidden');
+            document.getElementById('senderNoPage').classList.add('hidden');
+            
+            if (params.notify === 'sender' && params.response === 'yes') {
+                // Show sender notification page for YES
+                document.getElementById('senderYesPage').classList.remove('hidden');
+                document.getElementById('recipientNameYes').textContent = params.to;
+                document.getElementById('originalSenderYes').textContent = params.from;
+                createConfetti();
+            } else if (params.notify === 'sender' && params.response === 'no') {
+                // Show sender notification page for NO
+                document.getElementById('senderNoPage').classList.remove('hidden');
+                document.getElementById('recipientNameNo').textContent = params.to;
+                document.getElementById('originalSenderNo').textContent = params.from;
+            } else if (params.response === 'yes') {
+                // Show yes response page (for the person who answered)
+                document.getElementById('yesPage').classList.remove('hidden');
+                document.getElementById('senderName').textContent = params.from;
+                document.getElementById('senderNameNotify').textContent = params.from;
+                document.getElementById('senderNameShare').textContent = params.from;
+                
+                // Create notification link for sender
+                const notifyLink = `${window.location.href.split('?')[0]}?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}&response=yes&notify=sender`;
+                document.getElementById('yesLinkDisplay').textContent = notifyLink;
+                
+                createConfetti();
+            } else if (params.response === 'no') {
+                // Show no response page (for the person who answered)
+                document.getElementById('noPage').classList.remove('hidden');
+                document.getElementById('senderNameNo').textContent = params.from;
+                document.getElementById('senderNameNotifyNo').textContent = params.from;
+                document.getElementById('senderNameShareNo').textContent = params.from;
+                
+                // Create notification link for sender
+                const notifyLink = `${window.location.href.split('?')[0]}?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}&response=no&notify=sender`;
+                document.getElementById('noLinkDisplay').textContent = notifyLink;
+            } else if (params.from && params.to) {
+                // Show question page
+                document.getElementById('questionPage').classList.remove('hidden');
+                document.getElementById('fromName').textContent = params.from;
+                document.getElementById('toName').textContent = params.to;
+            } else {
+                // Show create page
+                document.getElementById('createPage').classList.remove('hidden');
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize analytics tracker
+            new AnalyticsTracker();
+            
+            // Initialize page
+            initPage();
+        });
+    </script>
+</body>
+</html>
