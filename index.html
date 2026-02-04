@@ -415,7 +415,7 @@
             
             <div class="buttons-container">
                 <button class="btn-yes" onclick="respondYes()">Yes! 💕</button>
-                <button class="btn-no" id="noBtn" onmouseover="moveButton()" onclick="respondNo()">No</button>
+                <button class="btn-no" id="noBtn" onmouseover="moveButton()" onmouseenter="moveButton()" ontouchstart="moveButtonTouch()" onclick="respondNo()">No</button>
             </div>
         </div>
 
@@ -710,21 +710,90 @@
             }
         }
 
-        // Move the No button randomly
+        // Move the No button randomly - Enhanced escape behavior
+        let moveCount = 0;
+        let isMoving = false;
+        
         function moveButton() {
             const btn = document.getElementById('noBtn');
+            if (isMoving) return;
+            
+            isMoving = true;
             btn.classList.add('moving');
             const container = btn.parentElement;
             const containerRect = container.getBoundingClientRect();
             
-            const maxX = containerRect.width - btn.offsetWidth - 100;
-            const maxY = containerRect.height - btn.offsetHeight - 100;
+            // Increase difficulty based on attempts
+            moveCount++;
+            const speed = Math.min(0.15, 0.05 + (moveCount * 0.015)); // Much faster movement
+            const escapeDistance = Math.min(200, 80 + (moveCount * 15)); // Further escape
             
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
+            // Get current mouse position
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+            const btnRect = btn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
             
+            // Calculate escape direction (away from mouse)
+            const angleFromMouse = Math.atan2(btnCenterY - mouseY, btnCenterX - mouseX);
+            
+            // Add some randomness to make it unpredictable
+            const randomAngle = angleFromMouse + (Math.random() - 0.5) * Math.PI / 2;
+            
+            // Calculate new position
+            const newX = btnCenterX - containerRect.left + Math.cos(randomAngle) * escapeDistance;
+            const newY = btnCenterY - containerRect.top + Math.sin(randomAngle) * escapeDistance;
+            
+            // Keep button within container bounds
+            const maxX = containerRect.width - btn.offsetWidth - 20;
+            const maxY = containerRect.height - btn.offsetHeight - 20;
+            const finalX = Math.max(10, Math.min(newX - btn.offsetWidth / 2, maxX));
+            const finalY = Math.max(10, Math.min(newY - btn.offsetHeight / 2, maxY));
+            
+            // Apply smooth transition
+            btn.style.transition = `all ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+            btn.style.left = finalX + 'px';
+            btn.style.top = finalY + 'px';
+            
+            // Add some fun effects
+            if (moveCount % 5 === 0) {
+                btn.style.transform = `rotate(${Math.random() * 360}deg) scale(${0.8 + Math.random() * 0.4})`;
+                setTimeout(() => {
+                    btn.style.transform = 'rotate(0deg) scale(1)';
+                }, 300);
+            }
+            
+            // Reset movement flag after transition
+            setTimeout(() => {
+                isMoving = false;
+            }, speed * 1000);
+        }
+        
+        // Also move on touch for mobile
+        function moveButtonTouch() {
+            const btn = document.getElementById('noBtn');
+            if (isMoving) return;
+            
+            isMoving = true;
+            btn.classList.add('moving');
+            const container = btn.parentElement;
+            const containerRect = container.getBoundingClientRect();
+            
+            moveCount++;
+            const speed = Math.min(0.1, 0.02 + (moveCount * 0.008)); // Even faster for touch
+            
+            // Random position for touch
+            const randomX = Math.random() * (containerRect.width - btn.offsetWidth - 40) + 20;
+            const randomY = Math.random() * (containerRect.height - btn.offsetHeight - 40) + 20;
+            
+            btn.style.transition = `all ${speed}s ease-out`;
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
+            
+            setTimeout(() => {
+                isMoving = false;
+            }, speed * 1000);
         }
 
         // Response handlers
@@ -859,7 +928,67 @@
             
             // Initialize page
             initPage();
+            
+            // Add extra escape mechanisms for the No button
+            setupAdvancedEscapeMechanisms();
         });
+        
+        // Advanced escape mechanisms for the No button
+        function setupAdvancedEscapeMechanisms() {
+            const btn = document.getElementById('noBtn');
+            if (!btn) return;
+            
+            // Proximity detection - move when mouse gets close
+            document.addEventListener('mousemove', (e) => {
+                if (document.getElementById('questionPage').classList.contains('hidden')) return;
+                
+                const btnRect = btn.getBoundingClientRect();
+                const btnCenterX = btnRect.left + btnRect.width / 2;
+                const btnCenterY = btnRect.top + btnRect.height / 2;
+                
+                const distance = Math.sqrt(
+                    Math.pow(e.clientX - btnCenterX, 2) + 
+                    Math.pow(e.clientY - btnCenterY, 2)
+                );
+                
+                // If mouse gets within 100px, escape!
+                if (distance < 100 && !isMoving) {
+                    moveButton();
+                }
+            });
+            
+            // Keyboard escape - move when certain keys are pressed
+            document.addEventListener('keydown', (e) => {
+                if (document.getElementById('questionPage').classList.contains('hidden')) return;
+                
+                if (['n', 'N', 'ArrowLeft', 'ArrowDown'].includes(e.key)) {
+                    moveButton();
+                }
+            });
+            
+            // Periodic random movement for extra challenge
+            setInterval(() => {
+                if (document.getElementById('questionPage').classList.contains('hidden')) return;
+                if (Math.random() < 0.2 && !isMoving) { // 20% chance every 1.5 seconds
+                    moveButton();
+                }
+            }, 1500);
+            
+            // Change button text occasionally to taunt the user
+            const originalText = btn.textContent;
+            const tauntingTexts = ['Nope!', 'Try again!', 'Not today!', 'Too slow!', 'Missed me!'];
+            
+            setInterval(() => {
+                if (document.getElementById('questionPage').classList.contains('hidden')) return;
+                if (Math.random() < 0.2) { // 20% chance every 3 seconds
+                    const randomText = tauntingTexts[Math.floor(Math.random() * tauntingTexts.length)];
+                    btn.textContent = randomText;
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 1500);
+                }
+            }, 3000);
+        }
     </script>
 </body>
 </html>
