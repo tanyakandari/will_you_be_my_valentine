@@ -369,6 +369,25 @@
             .question-title { font-size: 2.5em; }
             .create-section { padding: 40px 30px; }
             .btn-yes, .btn-no { padding: 15px 35px; font-size: 1.2em; }
+            
+            /* Mobile-specific button fixes */
+            .buttons-container {
+                flex-direction: column;
+                gap: 20px;
+                min-height: 250px;
+                align-items: center;
+            }
+            
+            .btn-yes, .btn-no {
+                width: 200px;
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+            }
+            
+            .btn-no.moving {
+                position: relative !important;
+            }
         }
     </style>
 </head>
@@ -723,38 +742,60 @@
             const container = btn.parentElement;
             const containerRect = container.getBoundingClientRect();
             
+            // Check if mobile
+            const isMobile = window.innerWidth <= 600;
+            
             // Increase difficulty based on attempts
             moveCount++;
             const speed = Math.min(0.15, 0.05 + (moveCount * 0.015)); // Much faster movement
             const escapeDistance = Math.min(200, 80 + (moveCount * 15)); // Further escape
             
-            // Get current mouse position
-            const mouseX = event.clientX;
-            const mouseY = event.clientY;
-            const btnRect = btn.getBoundingClientRect();
-            const btnCenterX = btnRect.left + btnRect.width / 2;
-            const btnCenterY = btnRect.top + btnRect.height / 2;
-            
-            // Calculate escape direction (away from mouse)
-            const angleFromMouse = Math.atan2(btnCenterY - mouseY, btnCenterX - mouseX);
-            
-            // Add some randomness to make it unpredictable
-            const randomAngle = angleFromMouse + (Math.random() - 0.5) * Math.PI / 2;
-            
-            // Calculate new position
-            const newX = btnCenterX - containerRect.left + Math.cos(randomAngle) * escapeDistance;
-            const newY = btnCenterY - containerRect.top + Math.sin(randomAngle) * escapeDistance;
-            
-            // Keep button within container bounds
-            const maxX = containerRect.width - btn.offsetWidth - 20;
-            const maxY = containerRect.height - btn.offsetHeight - 20;
-            const finalX = Math.max(10, Math.min(newX - btn.offsetWidth / 2, maxX));
-            const finalY = Math.max(10, Math.min(newY - btn.offsetHeight / 2, maxY));
-            
-            // Apply smooth transition
-            btn.style.transition = `all ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-            btn.style.left = finalX + 'px';
-            btn.style.top = finalY + 'px';
+            if (isMobile) {
+                // On mobile, swap positions with Yes button or move vertically
+                const yesBtn = document.querySelector('.btn-yes');
+                const yesRect = yesBtn.getBoundingClientRect();
+                const btnRect = btn.getBoundingClientRect();
+                
+                // Calculate positions relative to container
+                const yesRelativeTop = yesRect.top - containerRect.top;
+                const btnRelativeTop = btnRect.top - containerRect.top;
+                
+                // Swap positions vertically
+                const newTop = btnRelativeTop < yesRelativeTop ? yesRelativeTop + 20 : yesRelativeTop - 20;
+                const maxTop = containerRect.height - btn.offsetHeight - 20;
+                const finalTop = Math.max(10, Math.min(newTop, maxTop));
+                
+                btn.style.transition = `all ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+                btn.style.top = finalTop + 'px';
+                btn.style.left = 'auto';
+            } else {
+                // Desktop behavior - move away from mouse
+                const mouseX = event.clientX;
+                const mouseY = event.clientY;
+                const btnRect = btn.getBoundingClientRect();
+                const btnCenterX = btnRect.left + btnRect.width / 2;
+                const btnCenterY = btnRect.top + btnRect.height / 2;
+                
+                // Calculate escape direction (away from mouse)
+                const angleFromMouse = Math.atan2(btnCenterY - mouseY, btnCenterX - mouseX);
+                
+                // Add some randomness to make it unpredictable
+                const randomAngle = angleFromMouse + (Math.random() - 0.5) * Math.PI / 2;
+                
+                // Calculate new position
+                const newX = btnCenterX - containerRect.left + Math.cos(randomAngle) * escapeDistance;
+                const newY = btnCenterY - containerRect.top + Math.sin(randomAngle) * escapeDistance;
+                
+                // Keep button within container bounds
+                const maxX = containerRect.width - btn.offsetWidth - 20;
+                const maxY = containerRect.height - btn.offsetHeight - 20;
+                const finalX = Math.max(10, Math.min(newX - btn.offsetWidth / 2, maxX));
+                const finalY = Math.max(10, Math.min(newY - btn.offsetHeight / 2, maxY));
+                
+                btn.style.transition = `all ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+                btn.style.left = finalX + 'px';
+                btn.style.top = finalY + 'px';
+            }
             
             // Add some fun effects
             if (moveCount % 5 === 0) {
@@ -783,13 +824,35 @@
             moveCount++;
             const speed = Math.min(0.1, 0.02 + (moveCount * 0.008)); // Even faster for touch
             
-            // Random position for touch
-            const randomX = Math.random() * (containerRect.width - btn.offsetWidth - 40) + 20;
-            const randomY = Math.random() * (containerRect.height - btn.offsetHeight - 40) + 20;
+            // Check if mobile
+            const isMobile = window.innerWidth <= 600;
             
-            btn.style.transition = `all ${speed}s ease-out`;
-            btn.style.left = randomX + 'px';
-            btn.style.top = randomY + 'px';
+            if (isMobile) {
+                // On mobile, just swap with Yes button position
+                const yesBtn = document.querySelector('.btn-yes');
+                const yesRect = yesBtn.getBoundingClientRect();
+                const btnRect = btn.getBoundingClientRect();
+                
+                const yesRelativeTop = yesRect.top - containerRect.top;
+                const btnRelativeTop = btnRect.top - containerRect.top;
+                
+                // Swap positions
+                const newTop = btnRelativeTop < yesRelativeTop ? yesRelativeTop + 20 : yesRelativeTop - 20;
+                const maxTop = containerRect.height - btn.offsetHeight - 20;
+                const finalTop = Math.max(10, Math.min(newTop, maxTop));
+                
+                btn.style.transition = `all ${speed}s ease-out`;
+                btn.style.top = finalTop + 'px';
+                btn.style.left = 'auto';
+            } else {
+                // Desktop behavior
+                const randomX = Math.random() * (containerRect.width - btn.offsetWidth - 40) + 20;
+                const randomY = Math.random() * (containerRect.height - btn.offsetHeight - 40) + 20;
+                
+                btn.style.transition = `all ${speed}s ease-out`;
+                btn.style.left = randomX + 'px';
+                btn.style.top = randomY + 'px';
+            }
             
             setTimeout(() => {
                 isMoving = false;
